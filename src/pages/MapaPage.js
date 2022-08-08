@@ -18,6 +18,7 @@ const MapaPage = () => {
 
     const mapDiv = useRef();
     const [mapa,setMapa] = useState();
+    const [coords, setCoords] = useState(puntoInicial);
 
     useEffect(() => {
 
@@ -27,12 +28,30 @@ const MapaPage = () => {
             center: [puntoInicial.lng,puntoInicial.lat],
             zoom: puntoInicial.zoom
           });
-          
+
           setMapa(map);
     },[]);
 
+
+    useEffect(() => {
+      
+        mapa?.on('move', () => {
+
+            const  { lng, lat } = mapa.getCenter();
+            setCoords({lng: lng.toFixed(4),lat: lat.toFixed(4),
+                        zoom: mapa.getZoom().toFixed(2)})
+        });
+
+        return mapa?.off('move');
+   
+    }, [mapa])
+    
+
   return (
     <>
+        <div className="info">
+            Lng: {coords.lng} | Lat: {coords.lat} | Zoom : {coords.zoom}
+        </div>
       <div ref = {mapDiv} className="mapContainer">
 
       </div>
